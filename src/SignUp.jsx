@@ -2,15 +2,18 @@ import { createUserWithEmailAndPassword } from "firebase/auth";
 import auth from "./firebase.config";
 import { useState } from "react";
 import { Link } from "react-router-dom";
+import { AiOutlineEye, AiOutlineEyeInvisible } from "react-icons/ai";
 
 const SignUp = () => {
   const [signUpError, setSignUpError] = useState("");
   const [signUpSuccess, setSignUpSuccess] = useState("");
+  const [passwordVisible, setPasswordVisible] = useState(false);
 
   const handleSignUp = (e) => {
     e.preventDefault();
     const email = e.target.email.value;
     const password = e.target.password.value;
+    const terms = e.target.terms.checked;
     setSignUpError("");
     setSignUpSuccess("");
     const passwordRegex =
@@ -19,13 +22,12 @@ const SignUp = () => {
     if (password < 6) {
       setSignUpError("Password must me 6 characters long.");
       return;
-    } else if (passwordRegex.test(password)) {
+    } else if (!passwordRegex.test(password)) {
       setSignUpError(
         "Password must be combination of uppercase, lowercase, digit, and special character."
       );
       return;
-    }
-    if (password < 6) {
+    } else if (!terms) {
       setSignUpError("Please accept our terms and conditions.");
       return;
     }
@@ -36,7 +38,7 @@ const SignUp = () => {
         const user = userCredential.user;
         console.log(user);
         console.log(email, password);
-        setSignUpSuccess("User Created Successfully.");
+        setSignUpSuccess("Account Created Successfully.");
       })
       .catch((error) => {
         console.error(error);
@@ -45,7 +47,7 @@ const SignUp = () => {
   };
 
   return (
-    <div>
+    <div className="flex place-items-center min-h-[calc(100vh-4rem)]">
       <form
         onSubmit={handleSignUp}
         className="w-96 flex flex-col gap-5 mx-auto"
@@ -57,22 +59,34 @@ const SignUp = () => {
           id=""
           required
         />
-        <input
-          className="p-3 rounded"
-          type="text"
-          name="password"
-          id=""
-          required
-        />
-        <div className="flex gap-2">
-          <input type="checkbox" className="checkbox" /> Accept our{" "}
-          <Link
-            className="underline underline-offset-2 text-indigo-400"
-            to="/terms-and-conditions"
+
+        <div className="relative flex items-center">
+          <input
+            className="p-3 rounded w-full"
+            type={passwordVisible ? "text" : "password"}
+            name="password"
+            id=""
+            required
+          />
+          <span
+            className="absolute right-3"
+            onClick={() => setPasswordVisible(!passwordVisible)}
           >
-            {" "}
-            Terms and Conditions
-          </Link>
+            {passwordVisible ? <AiOutlineEyeInvisible /> : <AiOutlineEye />}
+          </span>
+        </div>
+        <div className="flex gap-2">
+          <input type="checkbox" className="checkbox" name="terms" />
+          <label htmlFor="terms">
+            Accept our{" "}
+            <Link
+              className="underline underline-offset-2 text-indigo-400"
+              to="/terms-and-conditions"
+            >
+              {" "}
+              Terms and Conditions
+            </Link>
+          </label>
         </div>
         {signUpError && <p className="text-red-400">{signUpError}</p>}
         <input
@@ -83,6 +97,15 @@ const SignUp = () => {
           value="Sign Up"
         />
         {signUpSuccess && <p className="text-green-400">{signUpSuccess}</p>}
+        <p>
+          Already have an account?{" "}
+          <Link
+            to="/login"
+            className="underline underline-offset-2 text-indigo-400"
+          >
+            Login
+          </Link>
+        </p>
       </form>
     </div>
   );
