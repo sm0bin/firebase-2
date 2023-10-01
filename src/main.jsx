@@ -7,6 +7,7 @@ import App from "./App";
 import Login from "./Login";
 import SignUp from "./SignUp";
 import Register from "./Register";
+import TermsAndConditions from "./TermsAndConditions";
 
 const router = createBrowserRouter([
   {
@@ -28,6 +29,10 @@ const router = createBrowserRouter([
       {
         path: "/register",
         element: <Register />,
+      },
+      {
+        path: "/terms-and-conditions",
+        element: <TermsAndConditions />,
       },
     ],
   },
