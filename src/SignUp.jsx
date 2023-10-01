@@ -1,4 +1,7 @@
-import { createUserWithEmailAndPassword } from "firebase/auth";
+import {
+  createUserWithEmailAndPassword,
+  sendEmailVerification,
+} from "firebase/auth";
 import auth from "./firebase.config";
 import { useState } from "react";
 import { Link } from "react-router-dom";
@@ -44,6 +47,10 @@ const SignUp = () => {
         console.error(error);
         setSignUpError(error.message);
       });
+
+    sendEmailVerification(auth.currentUser).then(() => {
+      alert("Verification mail sent. Verify your email");
+    });
   };
 
   return (

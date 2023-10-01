@@ -38,7 +38,7 @@ const Login = () => {
         const user = userCredential.user;
         console.log(user);
 
-        // ...
+        alert("You've Successfully Logged in");
       })
       .catch((error) => {
         console.log(error);
