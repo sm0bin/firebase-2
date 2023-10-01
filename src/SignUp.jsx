@@ -1,6 +1,7 @@
 import {
   createUserWithEmailAndPassword,
   sendEmailVerification,
+  updateProfile,
 } from "firebase/auth";
 import auth from "./firebase.config";
 import { useState } from "react";
@@ -14,6 +15,7 @@ const SignUp = () => {
 
   const handleSignUp = (e) => {
     e.preventDefault();
+    const name = e.target.name.value;
     const email = e.target.email.value;
     const password = e.target.password.value;
     const terms = e.target.terms.checked;
@@ -41,16 +43,25 @@ const SignUp = () => {
         const user = userCredential.user;
         console.log(user);
         console.log(email, password);
+        sendEmailVerification(auth.currentUser).then(() => {
+          alert("Verification mail sent. Verify your email");
+        });
+
+        updateProfile(auth.currentUser, {
+          displayName: name,
+        })
+          .then(() => {
+            alert("Success name");
+          })
+          .catch((error) => {
+            console.error(error);
+          });
         setSignUpSuccess("Account Created Successfully.");
       })
       .catch((error) => {
         console.error(error);
         setSignUpError(error.message);
       });
-
-    sendEmailVerification(auth.currentUser).then(() => {
-      alert("Verification mail sent. Verify your email");
-    });
   };
 
   return (
@@ -59,6 +70,8 @@ const SignUp = () => {
         onSubmit={handleSignUp}
         className="w-96 flex flex-col gap-5 mx-auto"
       >
+        <input className="p-3 rounded" type="text" name="name" id="" required />
+
         <input
           className="p-3 rounded"
           type="email"
@@ -82,6 +95,7 @@ const SignUp = () => {
             {passwordVisible ? <AiOutlineEyeInvisible /> : <AiOutlineEye />}
           </span>
         </div>
+
         <div className="flex gap-2">
           <input type="checkbox" className="checkbox" name="terms" />
           <label htmlFor="terms">
