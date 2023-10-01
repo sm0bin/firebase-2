@@ -6,6 +6,7 @@ import Hero from "./Hero";
 import App from "./App";
 import Login from "./Login";
 import SignUp from "./SignUp";
+import Register from "./Register";
 
 const router = createBrowserRouter([
   {
@@ -23,6 +24,10 @@ const router = createBrowserRouter([
       {
         path: "/sign-up",
         element: <SignUp />,
+      },
+      {
+        path: "/register",
+        element: <Register />,
       },
     ],
   },
